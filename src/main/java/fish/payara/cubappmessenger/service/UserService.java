@@ -8,6 +8,9 @@ package fish.payara.cubappmessenger.service;
 import fish.payara.cubappmessenger.base.User;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,18 +37,69 @@ public class UserService {
         
     }
     
-    public User getUserById(String id) {
-        return new User(id, "firstname here", "surname here");
+    public List<User> getAllUsers() {
+        
+        List<User> users = new ArrayList<>();
+        String sql = "select * from Users";
+        try {
+            //Statement statement = con.createStatement();
+            Statement statement = con.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+            while(rs.next()) {
+                User u = new User();
+                u.setUsername(rs.getString("username"));
+                u.setFirstName(rs.getString("firstName"));
+                u.setLastName(rs.getString("lastName"));
+                
+                users.add(u);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        return users;
     }
     
-    public List<User> getUsers() {
-        List<User> uList = new ArrayList<>();
-        uList.add(new User("username 1", "firstname here", "surname here"));
-        uList.add(new User("username 2", "firstname here", "surname here"));
-        uList.add(new User("username 3", "firstname here", "surname here"));
+    public User getUserById(String id) {
         
-        return uList;
+        User u = new User();
+        String sql = "select * from Users where username="+id ;
+        try {
+           // Statement statement = con.createStatement();
+            Statement statement = con.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+            if(rs.next()) {
+                
+                u.setUsername(rs.getString("username"));
+                u.setFirstName(rs.getString("firstName"));
+                u.setLastName(rs.getString("lastName"));
+                
+                
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
         
+        return u;
+    }
+    
+    public User addUser(User user) {
+        String sql = "insert into Users values (?,?,?)";
+        try {
+            //PreparedStatement statement = con.prepareStatement(sql);
+            PreparedStatement statement = con.prepareStatement(sql);
+            
+            statement.setString(1, user.getUsername());
+            statement.setString(2, user.getFirstName());
+            statement.setString(3, user.getLastName());
+            
+            statement.executeUpdate();
+            
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        return user;
     }
     
 }

@@ -40,7 +40,7 @@ public class UserResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUsers() {
-        List<User> u = uService.getUsers();
+        List<User> u = uService.getAllUsers();
         return Response.status(200).entity(u).build();
     }
     
@@ -51,8 +51,8 @@ public class UserResource {
             @QueryParam("firstName") String fname, 
             @QueryParam("lastName") String sname) {
         
-        User u = new User();
-        return Response.status(Status.CREATED).entity(u).build();
+        User u = new User(username, fname, sname);
+        return Response.status(Status.CREATED).entity(uService.addUser(u)).build();
         
     }
     
