@@ -63,7 +63,7 @@ public class UserService {
     public User getUserById(String id) {
         
         User u = new User();
-        String sql = "select * from Users where username="+id ;
+        String sql = "select * from Users where username='"+id.toString()+"'";
         try {
            // Statement statement = con.createStatement();
             Statement statement = con.createStatement();
